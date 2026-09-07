@@ -33,4 +33,4 @@ EXPOSE 3000
 # and for a small team; once you have real production traffic, most teams
 # move "migrate deploy" into its own CI/CD step so it's not re-attempted on
 # every container restart.
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main.js"]
