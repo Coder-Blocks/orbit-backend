@@ -15,11 +15,15 @@ import {
 // to change.
 @Injectable()
 export class MockPaymentProvider implements PaymentProvider {
-  async createOrder(amount: number, currency: string): Promise<ProviderOrder> {
+  async createOrder(
+    amount: number,
+    currency: string,
+    _metadata?: Record<string, unknown>,
+  ): Promise<ProviderOrder> {
     return { orderId: 'mock_order_' + randomUUID(), amount, currency };
   }
 
-  verifyWebhookSignature(): boolean {
+  verifyWebhookSignature(_payload?: unknown, _signature?: string): boolean {
     return true;
   }
 
@@ -27,11 +31,15 @@ export class MockPaymentProvider implements PaymentProvider {
     return { status: 'SUCCESS', providerRef: orderId };
   }
 
-  async initiateRefund(): Promise<RefundResult> {
+  async initiateRefund(
+    _paymentId?: string,
+    _amount?: number,
+    _reason?: string,
+  ): Promise<RefundResult> {
     return { status: 'SUCCESS', refundRef: 'mock_refund_' + randomUUID() };
   }
 
-  async createPayout(): Promise<PayoutResult> {
+  async createPayout(_ownerId?: string, _amount?: number): Promise<PayoutResult> {
     return { status: 'SUCCESS', payoutRef: 'mock_payout_' + randomUUID() };
   }
 }
