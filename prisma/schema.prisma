@@ -1,0 +1,493 @@
+// Orbit rental marketplace - database schema
+// Note: cross-entity references like Booking.renterId, Booking.ownerId,
+// AuditLog.actorId, Message.senderId etc. are intentionally left as plain
+// scalar ids (not enforced Prisma relations) to keep this starter schema
+// approachable. Add named relations (e.g. @relation("BookingRenter")) once
+// you're building out the real auth/user flows.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  RENTER
+  OWNER
+  ADMIN
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum ItemStatus {
+  DRAFT
+  IN_REVIEW
+  LIVE
+  PAUSED
+  REJECTED
+}
+
+enum PricingUnit {
+  HOUR
+  DAY
+  WEEK
+}
+
+enum BookingStatus {
+  DRAFT
+  REQUESTED
+  PENDING_OWNER_APPROVAL
+  REJECTED
+  PAYMENT_PENDING
+  PAYMENT_CONFIRMED
+  CONFIRMED
+  PICKUP_SCHEDULED
+  PICKUP_INSPECTION_PENDING
+  ACTIVE_RENTAL
+  RETURN_SCHEDULED
+  RETURN_INSPECTION_PENDING
+  DAMAGE_REVIEW
+  DEPOSIT_SETTLEMENT
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+enum PaymentStatus {
+  INITIATED
+  PENDING
+  SUCCESS
+  FAILED
+  EXPIRED
+  REFUNDED
+}
+
+enum DepositStatus {
+  COLLECTED
+  HELD
+  UNDER_REVIEW
+  FULL_REFUND
+  PARTIAL_REFUND
+  ADDITIONAL_CHARGE
+}
+
+enum ClaimStatus {
+  OPEN
+  ACCEPTED
+  DISPUTED
+  UNDER_ADMIN_REVIEW
+  RESOLVED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  phone        String   @unique
+  passwordHash String
+  roles        UserRole[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile         Profile?
+  ownerProfile    OwnerProfile?
+  customerProfile CustomerProfile?
+  verification    Verification?
+  addresses       Address[]
+}
+
+model Profile {
+  id       String  @id @default(cuid())
+  userId   String  @unique
+  user     User    @relation(fields: [userId], references: [id])
+  fullName String
+  avatarUrl String?
+  city     String?
+}
+
+model OwnerProfile {
+  id               String  @id @default(cuid())
+  userId           String  @unique
+  user             User    @relation(fields: [userId], references: [id])
+  payoutAccountRef String?
+  rating           Float   @default(0)
+  totalListings    Int     @default(0)
+  items            Item[]
+}
+
+model CustomerProfile {
+  id            String @id @default(cuid())
+  userId        String @unique
+  user          User   @relation(fields: [userId], references: [id])
+  rating        Float  @default(0)
+  totalBookings Int    @default(0)
+}
+
+model Verification {
+  id         String             @id @default(cuid())
+  userId     String             @unique
+  user       User               @relation(fields: [userId], references: [id])
+  status     VerificationStatus @default(UNVERIFIED)
+  idDocUrl   String?
+  reviewedBy String?
+  reviewedAt DateTime?
+}
+
+model Address {
+  id                   String  @id @default(cuid())
+  userId               String
+  user                 User    @relation(fields: [userId], references: [id])
+  label                String
+  line1                String
+  locality             String
+  cityId               String
+  city                 City    @relation(fields: [cityId], references: [id])
+  pincode              String
+  lat                  Float?
+  lng                  Float?
+  isPublicPickupPoint  Boolean @default(false)
+}
+
+model City {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  state     String
+  isLive    Boolean   @default(false)
+  items     Item[]
+  addresses Address[]
+}
+
+model Category {
+  id            String        @id @default(cuid())
+  name          String        @unique
+  slug          String        @unique
+  icon          String?
+  subcategories Subcategory[]
+  items         Item[]
+}
+
+model Subcategory {
+  id         String   @id @default(cuid())
+  name       String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  items      Item[]
+}
+
+model Item {
+  id            String       @id @default(cuid())
+  ownerId       String
+  owner         OwnerProfile @relation(fields: [ownerId], references: [id])
+  categoryId    String
+  category      Category     @relation(fields: [categoryId], references: [id])
+  subcategoryId String?
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+  cityId        String
+  city          City         @relation(fields: [cityId], references: [id])
+  title         String
+  brand         String?
+  model         String?
+  status        ItemStatus   @default(DRAFT)
+  rejectionReason String?
+  rules         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  media        ItemMedia[]
+  specs        ItemSpecification[]
+  availability ItemAvailability[]
+  pricing      PricingRule[]
+  bookings     Booking[]
+  favorites    Favorite[]
+  reviews      Review[]
+
+  @@index([cityId, categoryId, status])
+}
+
+model ItemMedia {
+  id               String  @id @default(cuid())
+  itemId           String
+  item             Item    @relation(fields: [itemId], references: [id])
+  url              String
+  type             String
+  angle            String?
+  isConditionPhoto Boolean @default(false)
+  sortOrder        Int     @default(0)
+}
+
+model ItemSpecification {
+  id     String @id @default(cuid())
+  itemId String
+  item   Item   @relation(fields: [itemId], references: [id])
+  label  String
+  value  String
+}
+
+model ItemAvailability {
+  id        String   @id @default(cuid())
+  itemId    String
+  item      Item     @relation(fields: [itemId], references: [id])
+  date      DateTime
+  isBlocked Boolean  @default(false)
+
+  @@unique([itemId, date])
+}
+
+model PricingRule {
+  id            String      @id @default(cuid())
+  itemId        String
+  item          Item        @relation(fields: [itemId], references: [id])
+  unit          PricingUnit
+  amount        Decimal
+  depositAmount Decimal
+}
+
+model Booking {
+  id                String        @id @default(cuid())
+  itemId            String
+  item              Item          @relation(fields: [itemId], references: [id])
+  renterId          String
+  ownerId           String
+  status            BookingStatus @default(DRAFT)
+  startAt           DateTime
+  endAt             DateTime
+  rentalAmount      Decimal
+  commissionPercent Decimal
+  depositAmount     Decimal
+  totalPayable      Decimal
+  pickupAddressId   String?
+  bookingCode       String        @unique
+  qrPayload         String
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  timeline         BookingTimeline[]
+  payments         Payment[]
+  pickupInspection PickupInspection?
+  returnInspection ReturnInspection?
+  damageClaim      DamageClaim?
+  deposit          Deposit?
+  conversation     Conversation?
+
+  @@index([status])
+}
+
+model BookingTimeline {
+  id         String   @id @default(cuid())
+  bookingId  String
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+  fromStatus String?
+  toStatus   String
+  actorId    String?
+  note       String?
+  createdAt  DateTime @default(now())
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  bookingId String
+  booking   Booking       @relation(fields: [bookingId], references: [id])
+  provider  String
+  status    PaymentStatus @default(INITIATED)
+  amount    Decimal
+
+  transactions PaymentTransaction[]
+  receipt      PaymentReceipt?
+}
+
+model PaymentTransaction {
+  id                String   @id @default(cuid())
+  paymentId         String
+  payment           Payment  @relation(fields: [paymentId], references: [id])
+  providerRef       String   @unique
+  rawWebhookPayload Json
+  signatureVerified Boolean
+  createdAt         DateTime @default(now())
+}
+
+model PaymentReceipt {
+  id            String   @id @default(cuid())
+  paymentId     String   @unique
+  payment       Payment  @relation(fields: [paymentId], references: [id])
+  receiptNumber String   @unique
+  issuedAt      DateTime @default(now())
+  pdfUrl        String?
+}
+
+model Refund {
+  id        String   @id @default(cuid())
+  bookingId String
+  amount    Decimal
+  reason    String
+  status    String
+  createdAt DateTime @default(now())
+}
+
+model Payout {
+  id        String   @id @default(cuid())
+  ownerId   String
+  amount    Decimal
+  status    String
+  cycleDate DateTime
+  createdAt DateTime @default(now())
+}
+
+model PlatformCommission {
+  id            String    @id @default(cuid())
+  percent       Decimal
+  effectiveFrom DateTime
+  effectiveTo   DateTime?
+}
+
+model Deposit {
+  id                   String        @id @default(cuid())
+  bookingId            String        @unique
+  booking              Booking       @relation(fields: [bookingId], references: [id])
+  amount               Decimal
+  status               DepositStatus @default(COLLECTED)
+  approvedDamageAmount Decimal?
+}
+
+model PickupInspection {
+  id                String    @id @default(cuid())
+  bookingId         String    @unique
+  booking           Booking   @relation(fields: [bookingId], references: [id])
+  ownerConfirmedAt  DateTime?
+  renterConfirmedAt DateTime?
+  checklist         Json
+  media             InspectionMedia[]
+}
+
+model ReturnInspection {
+  id                String    @id @default(cuid())
+  bookingId         String    @unique
+  booking           Booking   @relation(fields: [bookingId], references: [id])
+  ownerConfirmedAt  DateTime?
+  renterConfirmedAt DateTime?
+  checklist         Json
+  media             InspectionMedia[]
+}
+
+model InspectionMedia {
+  id                  String            @id @default(cuid())
+  pickupInspectionId  String?
+  pickupInspection    PickupInspection? @relation(fields: [pickupInspectionId], references: [id])
+  returnInspectionId  String?
+  returnInspection    ReturnInspection? @relation(fields: [returnInspectionId], references: [id])
+  url                 String
+  type                String
+  angle               String?
+  createdAt           DateTime          @default(now())
+}
+
+model DamageClaim {
+  id            String      @id @default(cuid())
+  bookingId     String      @unique
+  booking       Booking     @relation(fields: [bookingId], references: [id])
+  description   String
+  estimatedCost Decimal
+  status        ClaimStatus @default(OPEN)
+
+  evidence DamageEvidence[]
+  dispute  Dispute?
+}
+
+model DamageEvidence {
+  id         String      @id @default(cuid())
+  claimId    String
+  claim      DamageClaim @relation(fields: [claimId], references: [id])
+  uploadedBy String
+  url        String
+  type       String
+  createdAt  DateTime    @default(now())
+}
+
+model Dispute {
+  id             String      @id @default(cuid())
+  claimId        String      @unique
+  claim          DamageClaim @relation(fields: [claimId], references: [id])
+  renterResponse String?
+  adminDecision  String?
+  approvedAmount Decimal?
+  resolvedBy     String?
+  resolvedAt     DateTime?
+}
+
+model Conversation {
+  id        String    @id @default(cuid())
+  bookingId String?   @unique
+  booking   Booking?  @relation(fields: [bookingId], references: [id])
+  messages  Message[]
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  senderId       String
+  body           String
+  readAt         DateTime?
+  createdAt      DateTime     @default(now())
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String
+  payload   Json
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  itemId    String
+  item      Item     @relation(fields: [itemId], references: [id])
+  bookingId String   @unique
+  authorId  String
+  rating    Int
+  body      String?
+  createdAt DateTime @default(now())
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  itemId    String
+  item      Item     @relation(fields: [itemId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([itemId, userId])
+}
+
+model SupportTicket {
+  id        String   @id @default(cuid())
+  userId    String
+  subject   String
+  status    String
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json
+  createdAt  DateTime @default(now())
+}
+
+model PlatformSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+}
