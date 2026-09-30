@@ -98,35 +98,32 @@ async function main() {
     { title: 'Standalone VR Headset', cat: 'vr-headsets', city: hyderabad.id, day: 399, hour: 99, deposit: 6000 },
   ];
 
-  for (const it of items) {
-    await prisma.item.create({
-      data: {
-        ownerId: ownerProfileId,
-        categoryId: categories[it.cat].id,
-        cityId: it.city,
-        title: it.title,
-        status: it.status || 'LIVE',
-        rules: 'Return with battery charged above 30%. No unauthorized modifications.',
-        pricing: {
-          create: [
-            { unit: 'DAY', amount: it.day, depositAmount: it.deposit },
-            ...(it.hour ? [{ unit: 'HOUR' as const, amount: it.hour, depositAmount: it.deposit }] : []),
-          ],
+  // Keep production restarts idempotent: only create demo inventory when
+  // the database has no items yet. Cities, categories and users are upserts.
+  const existingItemCount = await prisma.item.count();
+  if (existingItemCount === 0) {
+    for (const it of items) {
+      await prisma.item.create({
+        data: {
+          ownerId: ownerProfileId,
+          categoryId: categories[it.cat].id,
+          cityId: it.city,
+          title: it.title,
+          status: it.status || 'LIVE',
+          rules: 'Return with battery charged above 30%. No unauthorized modifications.',
+          pricing: {
+            create: [
+              { unit: 'DAY', amount: it.day, depositAmount: it.deposit },
+              ...(it.hour ? [{ unit: 'HOUR' as const, amount: it.hour, depositAmount: it.deposit }] : []),
+            ],
+          },
         },
-      },
-    });
+      });
+    }
   }
 
   // eslint-disable-next-line no-console
-  console.log('Seed complete: 2 cities, 8 categories, 3 users, 6 items (1 pending review).');
-  // eslint-disable-next-line no-console
-  console.log('Demo logins (all password123):');
-  // eslint-disable-next-line no-console
-  console.log('  rahul@orbit.demo   - owner + renter');
-  // eslint-disable-next-line no-console
-  console.log('  ananya@orbit.demo  - renter');
-  // eslint-disable-next-line no-console
-  console.log('  admin@orbit.demo   - admin');
+  console.log(`Seed complete: catalog/users ready; demo items ${existingItemCount === 0 ? 'created' : 'already present'}.`);
 }
 
 main()
