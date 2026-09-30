@@ -1,11 +1,7 @@
-# Multi-stage build so the final image only carries what's needed to run,
-# not the full dev toolchain. Works as-is on Render, Railway, Fly.io, Cloud
-# Run, or anywhere else that can build from a Dockerfile.
-
+# Multi-stage build so the final image only carries what's needed to run.
 FROM node:20-slim AS build
 WORKDIR /app
 
-# OpenSSL is required by Prisma's query engine on Debian-based images.
 RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 COPY package.json package-lock.json* ./
@@ -14,7 +10,6 @@ RUN npm install
 COPY . .
 RUN npx prisma generate
 RUN npm run build
-
 
 FROM node:20-slim AS runtime
 WORKDIR /app
@@ -29,8 +24,7 @@ COPY --from=build /app/prisma ./prisma
 
 EXPOSE 3000
 
-# Runs pending migrations, then starts the API. Fine for a first deployment
-# and for a small team; once you have real production traffic, most teams
-# move "migrate deploy" into its own CI/CD step so it's not re-attempted on
-# every container restart.
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main.js"]
+# This project currently has a Prisma schema but no migration history.
+# db push creates/updates the schema safely for this starter deployment.
+# The seed is idempotent, so restarts do not duplicate demo inventory.
+CMD ["sh", "-c", "npx prisma db push && npx prisma db seed && node dist/src/main.js"]
