@@ -4,7 +4,7 @@
   "description": "Orbit rental marketplace API - NestJS + Prisma starter",
   "private": true,
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "node prisma/seed.js"
   },
   "scripts": {
     "build": "nest build",
