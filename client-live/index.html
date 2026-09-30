@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ff5a1f">
+<title>Orbit — Rent Premium Gear Nearby</title>
+<meta name="description" content="Orbit is a peer-to-peer marketplace for renting premium gear nearby.">
+<style>
+:root{--orange:#ff5a1f;--orange2:#ff7138;--ink:#101116;--muted:#6e7480;--line:#e8e9ed;--soft:#f7f7f8;--navy:#171927;--ok:#17a673;--danger:#e34850;--shadow:0 24px 70px rgba(18,20,28,.12)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff}button,input,select{font:inherit}button,a{transition:.2s ease}a{text-decoration:none;color:inherit}.wrap{width:min(1180px,calc(100% - 40px));margin:auto}
+.nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.94);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}.nav-row{height:74px;display:flex;align-items:center;gap:30px}.logo{display:flex;align-items:center;font-size:22px;font-weight:800;letter-spacing:-.03em}.logo-mark{width:26px;height:26px;border:2px solid #1c1d23;border-radius:50%;margin-right:9px;position:relative}.logo-mark:after{content:"";position:absolute;width:9px;height:9px;background:var(--orange);border-radius:50%;inset:0;margin:auto}.nav-links{display:flex;gap:25px;margin:auto;color:#555c68;font-weight:650}.nav-links a:hover{color:var(--ink)}.nav-actions{display:flex;gap:9px}.btn{border:0;border-radius:11px;padding:11px 16px;font-weight:750;cursor:pointer;background:#fff}.btn-primary{background:var(--orange);color:#fff}.btn-primary:hover{background:#ea4c12;transform:translateY(-1px)}.btn-outline{border:1px solid #d9dbe0}.btn-ghost{background:transparent}.btn-dark{background:var(--ink);color:#fff}.btn-lg{padding:14px 21px}.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.hero{background:radial-gradient(circle at 78% 45%,rgba(255,90,31,.16),transparent 27%),linear-gradient(135deg,#181a24,#242635 70%,#161720);color:#fff;overflow:hidden}.hero-grid{min-height:550px;display:grid;grid-template-columns:1.12fr .88fr;align-items:center;gap:45px}.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:12px;font-weight:850;color:var(--orange)}.eyebrow.light{color:#ff9f7a}.hero h1{font-size:clamp(49px,6.3vw,82px);line-height:.98;letter-spacing:-.065em;margin:14px 0 20px}.hero h1 span{color:#ff7846}.hero-copy{font-size:18px;line-height:1.65;color:#c7cad3;max-width:660px}.hero-actions{display:flex;gap:12px;margin:30px 0}.hero-stats{display:flex;gap:36px;margin-top:34px}.hero-stats div{display:flex;flex-direction:column}.hero-stats b{font-size:20px}.hero-stats span{font-size:12px;color:#9da2ae;margin-top:3px}
+.orbit-art{height:430px;position:relative;display:grid;place-items:center}.orbit-core{width:158px;height:158px;border-radius:50%;background:linear-gradient(145deg,#ff6b34,#ff4716);box-shadow:0 0 90px rgba(255,90,31,.38);display:grid;place-items:center;font-weight:900;letter-spacing:.18em}.ring{position:absolute;border:1px solid rgba(255,255,255,.18);border-radius:50%;animation:spin 18s linear infinite}.r1{width:330px;height:190px;transform:rotate(25deg)}.r2{width:250px;height:360px;transform:rotate(-28deg);animation-direction:reverse}.chip{position:absolute;background:#fff;color:#171821;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:900;box-shadow:0 10px 30px rgba(0,0,0,.22)}.c1{top:76px;right:28px}.c2{left:6px;bottom:115px}.c3{right:55px;bottom:60px}@keyframes spin{to{rotate:360deg}}
+.section{padding:82px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:27px}.section h2{font-size:clamp(30px,4vw,48px);letter-spacing:-.045em;margin:8px 0}.muted{color:var(--muted)}.category-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.cat{border:1px solid var(--line);border-radius:18px;padding:19px;background:#fff}.cat:hover{transform:translateY(-4px);box-shadow:0 15px 35px rgba(0,0,0,.08)}.cat .ico{font-size:28px;display:block;margin-bottom:13px}.cat b{display:block}.cat small{color:var(--muted)}
+.status{display:inline-flex;gap:8px;align-items:center;background:#effaf6;color:#177855;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800}.status i{width:8px;height:8px;background:#18ab78;border-radius:50%;box-shadow:0 0 0 5px rgba(24,171,120,.12)}
+.filters{display:flex;gap:10px;margin:0 0 22px}.field{width:100%;border:1px solid #dfe1e5;border-radius:11px;padding:12px 13px;background:#fff;outline:none}.field:focus{border-color:#ff9a74;box-shadow:0 0 0 3px rgba(255,90,31,.1)}select.field{cursor:pointer}.items{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.card{border:1px solid var(--line);border-radius:19px;overflow:hidden;background:#fff;cursor:pointer}.card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}.thumb{height:180px;background:linear-gradient(135deg,#f1f2f4,#e6e8eb);display:flex;align-items:flex-end;padding:16px;position:relative}.thumb:before{content:"";position:absolute;width:86px;height:86px;border:15px solid rgba(255,90,31,.12);border-radius:50%;right:22px;top:27px}.pill{background:rgba(255,255,255,.9);border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;position:relative}.card-body{padding:17px}.meta{font-size:12px;color:var(--muted);margin-bottom:7px}.title{font-weight:800;min-height:44px}.price{font-weight:900;margin-top:14px}.price span{font-size:12px;color:var(--muted);font-weight:500}
+.how{background:#f7f7f8}.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.step{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px}.step strong{display:block;font-size:26px;color:#ff7141;margin-bottom:28px}.step b{display:block;margin-bottom:8px}.step p{font-size:14px;color:var(--muted);line-height:1.6}
+.portal-shell{background:linear-gradient(135deg,#171926,#232638);border-radius:26px;padding:30px;color:#fff}.portal-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0}.portal-tab{border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;border-radius:999px;padding:10px 14px;cursor:pointer;font-weight:750}.portal-tab.active{background:var(--orange);border-color:var(--orange)}.portal-view{display:grid;grid-template-columns:240px 1fr;min-height:320px;background:#f6f7f9;border-radius:18px;overflow:hidden;color:var(--ink)}.side{background:#11131c;color:#dfe1e7;padding:20px}.side b{display:block;color:#fff;margin-bottom:20px}.side div{padding:10px 12px;border-radius:9px;margin:5px 0;background:rgba(255,255,255,.03)}.side div:first-of-type{background:rgba(255,90,31,.18);color:#ff9e79}.dash{padding:25px}.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.metric{border:1px solid var(--line);background:#fff;border-radius:15px;padding:17px}.metric span{font-size:12px;color:var(--muted)}.metric b{display:block;font-size:27px;margin-top:6px}.dash-table{margin-top:15px;background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden}.row{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:10px;padding:13px 15px;border-top:1px solid var(--line);font-size:13px}.row:first-child{border-top:0;font-weight:800;background:#fafafa}
+.account-area{display:none}.account-area.active{display:block}.panel{border:1px solid var(--line);border-radius:20px;padding:24px;background:#fff}.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-grid .full{grid-column:1/-1}.label{font-size:12px;font-weight:800;color:#505663;margin-bottom:6px}.auth-note{background:#fff8f4;border:1px solid #ffe2d5;padding:12px 14px;border-radius:11px;color:#9a421f;font-size:13px}.list{display:grid;gap:10px}.list-item{padding:15px;border:1px solid var(--line);border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:15px}.badge{padding:6px 9px;border-radius:999px;background:#f1f2f4;font-size:11px;font-weight:850}.badge.ok{background:#eaf8f2;color:#137553}.badge.warn{background:#fff3e8;color:#9b5517}
+.footer{padding:35px 0 55px;color:#7b808a;border-top:1px solid var(--line);font-size:13px}.footer-row{display:flex;justify-content:space-between;gap:20px}
+.modal{position:fixed;inset:0;background:rgba(9,10,14,.62);z-index:80;display:none;align-items:center;justify-content:center;padding:20px}.modal.open{display:flex}.modal-card{width:min(520px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;box-shadow:0 35px 100px rgba(0,0,0,.28);padding:26px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.modal-head h3{margin:0;font-size:27px}.x{border:0;background:#f1f2f4;width:34px;height:34px;border-radius:50%;cursor:pointer}.stack{display:grid;gap:12px}.toast{position:fixed;right:22px;bottom:22px;background:#161820;color:#fff;padding:13px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:120;opacity:0;transform:translateY(10px);pointer-events:none}.toast.show{opacity:1;transform:none}.empty{padding:28px;border:1px dashed #cfd2d8;border-radius:14px;color:var(--muted);text-align:center}
+@media(max-width:980px){.nav-links{display:none}.hero-grid{grid-template-columns:1fr;min-height:auto;padding:70px 0}.orbit-art{height:330px}.category-grid{grid-template-columns:repeat(3,1fr)}.items{grid-template-columns:repeat(2,1fr)}.how-grid{grid-template-columns:repeat(2,1fr)}.portal-view{grid-template-columns:1fr}.side{display:none}.panel-grid{grid-template-columns:1fr}}
+@media(max-width:620px){.wrap{width:min(100% - 24px,1180px)}.nav-row{height:66px}.hide-mobile{display:none}.hero h1{font-size:48px}.hero-stats{gap:18px;flex-wrap:wrap}.orbit-art{display:none}.section{padding:60px 0}.category-grid{grid-template-columns:repeat(2,1fr)}.items,.how-grid,.metric-grid,.form-grid{grid-template-columns:1fr}.filters{flex-direction:column}.row{grid-template-columns:1fr}.portal-shell{padding:20px}.footer-row{flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-row">
+    <a class="logo" href="#top"><span class="logo-mark"></span>Orbit</a>
+    <nav class="nav-links">
+      <a href="#explore">Explore</a><a href="#portals">Portals</a><a href="#how">How it works</a>
+      <a href="#account" onclick="showAccount('bookings')">Bookings</a><a href="#account" onclick="showAccount('owner')">Owner</a>
+    </nav>
+    <div class="nav-actions" id="navActions">
+      <button class="btn btn-ghost hide-mobile" onclick="openAuth('login')">Log in</button>
+      <button class="btn btn-primary" onclick="openAuth('signup')">Sign up</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow light">Peer-to-peer gear rental</div>
+      <h1>Don't buy it.<br><span>Rent it nearby.</span></h1>
+      <p class="hero-copy">Premium RC cars, drones, cameras, gaming gear and more from verified owners nearby. Book what you need, when you need it.</p>
+      <div class="hero-actions">
+        <a href="#explore" class="btn btn-primary btn-lg">Explore gear</a>
+        <a href="#account" onclick="showAccount('owner')" class="btn btn-dark btn-lg">List & earn</a>
+      </div>
+      <div class="hero-stats"><div><b>15+</b><span>categories</span></div><div><b>Multi-city</b><span>marketplace</span></div><div><b>Verified</b><span>owners & renters</span></div></div>
+    </div>
+    <div class="orbit-art" aria-hidden="true">
+      <div class="ring r1"></div><div class="ring r2"></div><div class="orbit-core">ORBIT</div>
+      <div class="chip c1">DRONE</div><div class="chip c2">CAMERA</div><div class="chip c3">RC</div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="section-head"><div><div class="eyebrow">Explore by category</div><h2>Premium gear, without the ownership cost.</h2></div></div>
+  <div class="category-grid">
+    <a class="cat" href="#explore" data-cat="rc-cars"><span class="ico">🏎️</span><b>RC Cars</b><small>Browse nearby</small></a>
+    <a class="cat" href="#explore" data-cat="drones"><span class="ico">🚁</span><b>Drones</b><small>Browse nearby</small></a>
+    <a class="cat" href="#explore" data-cat="cameras"><span class="ico">📷</span><b>Cameras</b><small>Browse nearby</small></a>
+    <a class="cat" href="#explore" data-cat="gaming"><span class="ico">🎮</span><b>Gaming</b><small>Browse nearby</small></a>
+    <a class="cat" href="#explore" data-cat="audio"><span class="ico">🎧</span><b>Audio</b><small>Browse nearby</small></a>
+    <a class="cat" href="#explore" data-cat="projectors"><span class="ico">📽️</span><b>Projectors</b><small>Browse nearby</small></a>
+  </div>
+</section>
+
+<section class="section wrap" id="explore">
+  <div class="section-head">
+    <div><div class="eyebrow">Live marketplace</div><h2>Available now</h2></div>
+    <span class="status" id="apiStatus"><i></i> Connecting to live API</span>
+  </div>
+  <div class="filters"><select class="field" id="cityFilter"><option value="">All cities</option></select><select class="field" id="categoryFilter"><option value="">All categories</option></select><button class="btn btn-outline" onclick="loadItems()">Refresh</button></div>
+  <div class="items" id="items"><div class="empty" style="grid-column:1/-1">Loading Orbit marketplace…</div></div>
+</section>
+
+<section class="section how" id="how">
+  <div class="wrap">
+    <div class="eyebrow">How Orbit works</div><h2>From discovery to return, in four simple steps.</h2>
+    <div class="how-grid">
+      <div class="step"><strong>01</strong><b>Find nearby gear</b><p>Browse by category, city and availability.</p></div>
+      <div class="step"><strong>02</strong><b>Book securely</b><p>Choose your dates and send a booking request.</p></div>
+      <div class="step"><strong>03</strong><b>Pickup with proof</b><p>Condition checks protect renter and owner.</p></div>
+      <div class="step"><strong>04</strong><b>Return & close</b><p>Track status, deposit and completion clearly.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="portals">
+  <div class="section-head"><div><div class="eyebrow">Complete product experience</div><h2>Public, Renter, Owner & Admin portals.</h2><p class="muted">One product with role-focused dashboards.</p></div></div>
+  <div class="portal-shell">
+    <div class="portal-tabs"><button class="portal-tab active" onclick="portal('Public',this)">Public Marketplace</button><button class="portal-tab" onclick="portal('Renter',this)">Renter Portal</button><button class="portal-tab" onclick="portal('Owner',this)">Owner Portal</button><button class="portal-tab" onclick="portal('Admin',this)">Admin Portal</button></div>
+    <div class="portal-view">
+      <aside class="side"><b id="sideTitle">Orbit Public</b><div>Overview</div><div>Marketplace</div><div>Bookings</div><div>Messages</div><div>Verification</div></aside>
+      <div class="dash"><div class="eyebrow" id="portalEyebrow">PUBLIC EXPERIENCE</div><h3 id="portalTitle" style="font-size:30px;margin:7px 0 20px">Marketplace overview</h3><div class="metric-grid" id="metrics"></div><div class="dash-table" id="portalTable"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="account">
+  <div class="section-head"><div><div class="eyebrow">Your Orbit</div><h2>Bookings & Owner workspace</h2></div><div><button class="btn btn-outline" onclick="showAccount('bookings')">Bookings</button> <button class="btn btn-outline" onclick="showAccount('owner')">Owner</button> <button class="btn btn-outline" onclick="showAccount('requests')">Requests</button></div></div>
+
+  <div id="needLogin" class="panel"><div class="auth-note">Log in or create an account to use bookings and owner tools.</div><div style="margin-top:14px"><button class="btn btn-primary" onclick="openAuth('signup')">Create account</button> <button class="btn btn-outline" onclick="openAuth('login')">Log in</button></div></div>
+
+  <div id="bookingsArea" class="account-area"><div class="panel"><h3>My bookings</h3><div class="list" id="bookingsList"></div></div></div>
+
+  <div id="ownerArea" class="account-area">
+    <div class="panel-grid">
+      <div class="panel"><h3>List new gear</h3><div class="form-grid">
+        <div class="full"><div class="label">Title</div><input class="field" id="gearTitle" placeholder="e.g. 4K Camera Drone"></div>
+        <div><div class="label">Category</div><select class="field" id="gearCategory"></select></div>
+        <div><div class="label">City</div><select class="field" id="gearCity"></select></div>
+        <div><div class="label">Daily price (₹)</div><input class="field" id="gearPrice" type="number" min="1" value="999"></div>
+        <div><div class="label">Deposit (₹)</div><input class="field" id="gearDeposit" type="number" min="0" value="2500"></div>
+        <div class="full"><button class="btn btn-primary" onclick="createListing()">Submit listing</button></div>
+      </div></div>
+      <div class="panel"><h3>My listings</h3><div class="list" id="myListings"></div></div>
+    </div>
+  </div>
+
+  <div id="requestsArea" class="account-area"><div class="panel"><h3>Owner booking requests</h3><div class="list" id="requestsList"></div></div></div>
+</section>
+</main>
+
+<footer class="footer"><div class="wrap footer-row"><b style="color:#222">Orbit — Rent Premium Gear Nearby</b><span>Live client preview · Secure API-backed marketplace</span></div></footer>
+
+<div class="modal" id="authModal"><div class="modal-card"><div class="modal-head"><h3 id="authTitle">Create account</h3><button class="x" onclick="closeModal('authModal')">×</button></div><div class="stack" id="authFields"></div></div></div>
+<div class="modal" id="itemModal"><div class="modal-card"><div class="modal-head"><h3 id="itemModalTitle">Gear details</h3><button class="x" onclick="closeModal('itemModal')">×</button></div><div id="itemModalBody"></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const API='https://orbit-backend-wqro.onrender.com';
+let items=[],categories=[],cities=[],selectedItem=null;
+const fallbackItems=[
+{id:'demo1',title:'4WD Off-Road RC Buggy',status:'LIVE',category:{name:'RC Cars',slug:'rc-cars'},city:{name:'Hyderabad'},pricing:[{unit:'DAY',amount:799,depositAmount:2500}]},
+{id:'demo2',title:'4K GPS Camera Drone',status:'LIVE',category:{name:'Drones',slug:'drones'},city:{name:'Visakhapatnam'},pricing:[{unit:'DAY',amount:1499,depositAmount:5000}]},
+{id:'demo3',title:'Mirrorless Camera Creator Kit',status:'LIVE',category:{name:'Cameras',slug:'cameras'},city:{name:'Vizianagaram'},pricing:[{unit:'DAY',amount:1199,depositAmount:4000}]},
+{id:'demo4',title:'Full HD Home Projector',status:'LIVE',category:{name:'Projectors',slug:'projectors'},city:{name:'Srikakulam'},pricing:[{unit:'DAY',amount:899,depositAmount:3000}]}
+];
+function token(){return localStorage.getItem('orbit_token')||''}
+async function req(path,options={}){
+  const h={'Content-Type':'application/json',...(options.headers||{})}; if(token())h.Authorization='Bearer '+token();
+  const r=await fetch(API+path,{...options,headers:h}); let body=null; try{body=await r.json()}catch{}
+  if(!r.ok) throw new Error(body?.message||(Array.isArray(body?.message)?body.message.join(', '):'Request failed: '+r.status));
+  return body;
+}
+function money(n){return '₹'+Number(n||0).toLocaleString('en-IN')}
+function toast(msg,bad=false){const t=document.getElementById('toast');t.textContent=msg;t.style.background=bad?'#b7333a':'#161820';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200)}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function openModal(id){document.getElementById(id).classList.add('open')}
+function setApi(ok,msg){const s=document.getElementById('apiStatus');s.innerHTML='<i></i> '+msg;s.style.background=ok?'#effaf6':'#fff4ed';s.style.color=ok?'#177855':'#985124';s.querySelector('i').style.background=ok?'#18ab78':'#f08a45'}
+
+async function boot(){
+  updateNav(); portal('Public',document.querySelector('.portal-tab'));
+  try{
+    [categories,cities]=await Promise.all([req('/catalog/categories'),req('/catalog/cities')]);
+    fillCatalogs(); setApi(true,'Live API connected');
+  }catch(e){setApi(false,'Demo mode · API waking up'); categories=[{id:'cat_rc',name:'RC Cars',slug:'rc-cars'},{id:'cat_drones',name:'Drones',slug:'drones'},{id:'cat_cameras',name:'Cameras',slug:'cameras'},{id:'cat_gaming',name:'Gaming',slug:'gaming'},{id:'cat_audio',name:'Audio',slug:'audio'},{id:'cat_projectors',name:'Projectors',slug:'projectors'}];cities=[{id:'city_hyd',name:'Hyderabad'},{id:'city_vskp',name:'Visakhapatnam'},{id:'city_vzm',name:'Vizianagaram'},{id:'city_sklm',name:'Srikakulam'}];fillCatalogs()}
+  await loadItems();
+  document.querySelectorAll('[data-cat]').forEach(a=>a.onclick=()=>{document.getElementById('categoryFilter').value=a.dataset.cat;setTimeout(loadItems,50)});
+}
+function fillCatalogs(){
+  const cf=document.getElementById('categoryFilter'),ct=document.getElementById('cityFilter'),gc=document.getElementById('gearCategory'),gcity=document.getElementById('gearCity');
+  categories.forEach(x=>{cf.insertAdjacentHTML('beforeend',`<option value="${x.slug||x.id}">${x.name}</option>`);gc.insertAdjacentHTML('beforeend',`<option value="${x.id}">${x.name}</option>`)});
+  cities.forEach(x=>{ct.insertAdjacentHTML('beforeend',`<option value="${x.name}">${x.name}</option>`);gcity.insertAdjacentHTML('beforeend',`<option value="${x.id}">${x.name}</option>`)});
+  cf.onchange=ct.onchange=loadItems;
+}
+async function loadItems(){
+  const c=document.getElementById('cityFilter').value,cat=document.getElementById('categoryFilter').value;
+  document.getElementById('items').innerHTML='<div class="empty" style="grid-column:1/-1">Loading available gear…</div>';
+  try{
+    const q=new URLSearchParams();if(c)q.set('city',c);if(cat)q.set('category',cat);
+    items=await req('/items'+(q.toString()?'?'+q:''));
+    setApi(true,'Live API connected');
+  }catch(e){items=fallbackItems.filter(x=>(!c||x.city?.name===c)&&(!cat||x.category?.slug===cat));setApi(false,'Demo mode · API may be waking up')}
+  renderItems();
+}
+function renderItems(){
+  const el=document.getElementById('items'); if(!items.length){el.innerHTML='<div class="empty" style="grid-column:1/-1">No matching gear found.</div>';return}
+  el.innerHTML=items.map(x=>{const p=(x.pricing||[]).find(y=>y.unit==='DAY')||x.pricing?.[0];return `<article class="card" onclick="openItem('${x.id}')"><div class="thumb"><span class="pill">${x.category?.name||'Orbit gear'}</span></div><div class="card-body"><div class="meta">${x.category?.name||'Gear'} · ${x.city?.name||'Nearby'}</div><div class="title">${x.title}</div><div class="price">${p?money(p.amount):'View pricing'} <span>/ day</span></div></div></article>`}).join('');
+}
+async function openItem(id){
+  selectedItem=items.find(x=>x.id===id); if(!selectedItem)return;
+  const p=(selectedItem.pricing||[]).find(y=>y.unit==='DAY')||selectedItem.pricing?.[0]||{};
+  document.getElementById('itemModalTitle').textContent=selectedItem.title;
+  document.getElementById('itemModalBody').innerHTML=`<div class="meta">${selectedItem.category?.name||''} · ${selectedItem.city?.name||''}</div><p style="font-size:26px;font-weight:900;margin:10px 0">${money(p.amount)}<span style="font-size:13px;color:#777;font-weight:500"> / day</span></p><p class="muted">Refundable deposit: ${money(p.depositAmount)}</p><div class="auth-note">${selectedItem.rules||'Verified rental workflow with clear pickup and return status tracking.'}</div><div style="margin-top:20px"><div class="label">Start date</div><input class="field" id="startDate" type="date"><div class="label" style="margin-top:10px">End date</div><input class="field" id="endDate" type="date"><button class="btn btn-primary" style="width:100%;margin-top:15px" onclick="bookSelected()">Request booking</button></div>`;
+  openModal('itemModal');
+}
+async function bookSelected(){
+  if(!token()){closeModal('itemModal');openAuth('signup');toast('Create an account to book this item.');return}
+  const s=document.getElementById('startDate').value,e=document.getElementById('endDate').value;if(!s||!e){toast('Select start and end dates.',true);return}
+  try{await req('/bookings',{method:'POST',body:JSON.stringify({itemId:selectedItem.id,startAt:new Date(s+'T09:00:00').toISOString(),endAt:new Date(e+'T18:00:00').toISOString()})});closeModal('itemModal');toast('Booking request created.');showAccount('bookings')}catch(err){toast(err.message,true)}
+}
+function openAuth(mode){
+  const signup=mode==='signup';document.getElementById('authTitle').textContent=signup?'Create your Orbit account':'Welcome back';
+  document.getElementById('authFields').innerHTML=signup?`
+    <div><div class="label">Full name</div><input class="field" id="aName" placeholder="Your full name"></div>
+    <div><div class="label">Email</div><input class="field" id="aEmail" type="email" placeholder="you@example.com"></div>
+    <div><div class="label">Phone</div><input class="field" id="aPhone" placeholder="10-digit mobile number"></div>
+    <div><div class="label">Password</div><input class="field" id="aPass" type="password" placeholder="Minimum 8 characters"></div>
+    <button class="btn btn-primary" onclick="submitAuth('signup')">Create account</button>
+    <button class="btn btn-ghost" onclick="openAuth('login')">Already have an account? Log in</button>`:`
+    <div><div class="label">Email</div><input class="field" id="aEmail" type="email" placeholder="you@example.com"></div>
+    <div><div class="label">Password</div><input class="field" id="aPass" type="password"></div>
+    <button class="btn btn-primary" onclick="submitAuth('login')">Log in</button>
+    <button class="btn btn-ghost" onclick="openAuth('signup')">New to Orbit? Create account</button>`;
+  openModal('authModal');
+}
+async function submitAuth(mode){
+  const email=document.getElementById('aEmail').value.trim(),password=document.getElementById('aPass').value;
+  try{
+    let out;if(mode==='signup')out=await req('/auth/signup',{method:'POST',body:JSON.stringify({fullName:document.getElementById('aName').value.trim(),email,phone:document.getElementById('aPhone').value.trim(),password})});
+    else out=await req('/auth/login',{method:'POST',body:JSON.stringify({email,password})});
+    localStorage.setItem('orbit_token',out.accessToken);if(out.refreshToken)localStorage.setItem('orbit_refresh',out.refreshToken);closeModal('authModal');updateNav();toast(mode==='signup'?'Account created successfully.':'Logged in successfully.');showAccount('bookings')
+  }catch(err){toast(err.message,true)}
+}
+function updateNav(){
+  const n=document.getElementById('navActions'); if(token()) n.innerHTML='<button class="btn btn-outline" onclick="showAccount(\'bookings\')">My Orbit</button><button class="btn btn-primary" onclick="logout()">Log out</button>'; else n.innerHTML='<button class="btn btn-ghost hide-mobile" onclick="openAuth(\'login\')">Log in</button><button class="btn btn-primary" onclick="openAuth(\'signup\')">Sign up</button>';
+  document.getElementById('needLogin').style.display=token()?'none':'block';
+}
+function logout(){localStorage.removeItem('orbit_token');localStorage.removeItem('orbit_refresh');updateNav();document.querySelectorAll('.account-area').forEach(x=>x.classList.remove('active'));toast('Logged out.')}
+async function showAccount(which){
+  location.hash='account'; updateNav(); if(!token()){document.getElementById('needLogin').style.display='block';return}
+  document.getElementById('needLogin').style.display='none';document.querySelectorAll('.account-area').forEach(x=>x.classList.remove('active'));
+  const map={bookings:'bookingsArea',owner:'ownerArea',requests:'requestsArea'};document.getElementById(map[which]||'bookingsArea').classList.add('active');
+  if(which==='bookings')loadBookings();if(which==='owner')loadMyListings();if(which==='requests')loadRequests();
+}
+async function loadBookings(){
+  const el=document.getElementById('bookingsList');el.innerHTML='<div class="empty">Loading bookings…</div>';
+  try{const b=await req('/bookings');el.innerHTML=b.length?b.map(x=>`<div class="list-item"><div><b>${x.item?.title||x.bookingCode||'Orbit booking'}</b><div class="meta">${new Date(x.startAt).toLocaleDateString()} → ${new Date(x.endAt).toLocaleDateString()}</div></div><span class="badge ${['CONFIRMED','COMPLETED','ACTIVE'].some(s=>String(x.status).includes(s))?'ok':'warn'}">${x.status}</span></div>`).join(''):'<div class="empty">No bookings yet. Explore gear and make your first request.</div>'}catch(e){el.innerHTML='<div class="empty">'+e.message+'</div>'}
+}
+async function loadMyListings(){
+  const el=document.getElementById('myListings');el.innerHTML='<div class="empty">Loading listings…</div>';
+  try{const x=await req('/items/mine');el.innerHTML=x.length?x.map(i=>`<div class="list-item"><div><b>${i.title}</b><div class="meta">${i.city?.name||''}</div></div><span class="badge">${i.status}</span></div>`).join(''):'<div class="empty">No owner listings yet.</div>'}catch(e){el.innerHTML='<div class="empty">'+e.message+'</div>'}
+}
+async function createListing(){
+  const data={title:document.getElementById('gearTitle').value.trim(),categoryId:document.getElementById('gearCategory').value,cityId:document.getElementById('gearCity').value,dayPrice:Number(document.getElementById('gearPrice').value),deposit:Number(document.getElementById('gearDeposit').value)};
+  try{await req('/items',{method:'POST',body:JSON.stringify(data)});document.getElementById('gearTitle').value='';toast('Listing submitted for review.');loadMyListings()}catch(e){toast(e.message,true)}
+}
+async function loadRequests(){
+  const el=document.getElementById('requestsList');el.innerHTML='<div class="empty">Loading requests…</div>';
+  try{const b=await req('/bookings/owner/requests');el.innerHTML=b.length?b.map(x=>`<div class="list-item"><div><b>${x.item?.title||x.bookingCode||'Booking request'}</b><div class="meta">${x.status} · ${money(x.totalPayable)}</div></div><div><button class="btn btn-primary" onclick="setBookingStatus('${x.id}','OWNER_ACCEPTED')">Accept</button> <button class="btn btn-outline" onclick="setBookingStatus('${x.id}','OWNER_REJECTED')">Reject</button></div></div>`).join(''):'<div class="empty">No owner requests right now.</div>'}catch(e){el.innerHTML='<div class="empty">'+e.message+'</div>'}
+}
+async function setBookingStatus(id,status){try{await req('/bookings/'+id+'/status',{method:'PATCH',body:JSON.stringify({status})});toast('Booking updated.');loadRequests()}catch(e){toast(e.message,true)}}
+
+const portalData={
+ Public:{title:'Marketplace overview',metrics:[['Live listings','1,248'],['Active cities','18'],['Searches today','3.6K']],rows:[['Premium camera kit','Hyderabad','₹1,299/day'],['FPV drone combo','Visakhapatnam','₹1,699/day'],['RC off-road buggy','Vizianagaram','₹799/day']]},
+ Renter:{title:'Renter dashboard',metrics:[['Upcoming','3'],['Completed','18'],['Wallet','₹2,450']],rows:[['Camera Kit','Pickup tomorrow','Confirmed'],['Projector','12 Oct','Requested'],['Drone','18 Oct','Pending']]},
+ Owner:{title:'Owner command center',metrics:[['Monthly earnings','₹48.6K'],['Live gear','12'],['Requests','7']],rows:[['Sony Creator Kit','4 requests','Live'],['DJI Drone','2 requests','Live'],['Gaming Console','1 request','Review']]},
+ Admin:{title:'Admin control room',metrics:[['GMV this month','₹12.8L'],['Users','8,942'],['Open reviews','23']],rows:[['KYC queue','12 users','Review'],['Damage claims','4 cases','Action'],['Listing moderation','7 items','Review']]}
+};
+function portal(name,btn){
+  document.querySelectorAll('.portal-tab').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');
+  const p=portalData[name];document.getElementById('sideTitle').textContent='Orbit '+name;document.getElementById('portalEyebrow').textContent=name.toUpperCase()+' EXPERIENCE';document.getElementById('portalTitle').textContent=p.title;
+  document.getElementById('metrics').innerHTML=p.metrics.map(x=>`<div class="metric"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+  document.getElementById('portalTable').innerHTML='<div class="row"><span>Item / Queue</span><span>Details</span><span>Status</span></div>'+p.rows.map(r=>`<div class="row"><span>${r[0]}</span><span>${r[1]}</span><span>${r[2]}</span></div>`).join('');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(x=>x.classList.remove('open'))});
+boot();
+</script>
+</body>
+</html>
